@@ -15,4 +15,5 @@ class ImgHandler(BaseHandler):
         if text:
             self.stats_updater.update_text(text)
             self.check_commands(text)
+            self.check_interaction(text)
         self.check_level_up()

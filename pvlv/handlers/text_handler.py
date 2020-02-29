@@ -16,3 +16,4 @@ class TextHandler(BaseHandler):
             self.check_spam()
 
         self.check_level_up()
+        self.check_interaction(text)

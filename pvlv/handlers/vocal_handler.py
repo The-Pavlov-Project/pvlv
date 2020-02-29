@@ -19,5 +19,5 @@ class VocalHandler(BaseHandler):
         # if the bot is paused don't do stt conversions.
         if not self.db.guild.bot_paused:
             # run the speech to text on another thread, cause it's time consuming operation
-            t = Thread(target=speech_to_text, args=(self.bot, file, self.bot.guild_id, self.db.guild.languages[0]))
+            t = Thread(target=speech_to_text, args=(self.bot, file, self.db.guild.languages[0]))
             t.start()

@@ -5,7 +5,7 @@ from pvlv.static.settings import *
 from pvlv.pvlv import BotInterface
 
 
-def speech_to_text(bot: BotInterface, file, guild_id, language):
+def speech_to_text(bot: BotInterface, raw_file, language):
 
     if language != ITA:
         language = 'it-IT'
@@ -13,12 +13,10 @@ def speech_to_text(bot: BotInterface, file, guild_id, language):
         language = 'en-EN'
 
     """
-    Download the telegram file
+    Reset the current position of the segment
     And prepare it for manipulation
     """
-    raw_file = BytesIO()  # the file download needs a var where write the audio (on ram)
-    raw_file = file.download(out=raw_file)
-    raw_file.seek(0)  # reset the current position of the segment
+    raw_file.seek(0)
 
     """
     Speed up the audio for a faster upload
@@ -47,4 +45,4 @@ def speech_to_text(bot: BotInterface, file, guild_id, language):
         text = ""
 
     # finally sent the transcription to the chat
-    bot.reply_text(guild_id, 'Speech to text:\n{}'.format(text))
+    bot.reply_text('Speech to text:\n{}'.format(text))

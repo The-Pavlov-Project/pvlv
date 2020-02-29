@@ -2,6 +2,6 @@ twine
 pvlv-database==0.0.9
 pvlv-commando==0.0.5
 pvlv-img_builder==0.0.1
-# pvlv-interactions==0.0.1
+pvlv-interactions==0.0.2
 SpeechRecognition==3.8.1
 pydub==0.23.1

@@ -5,6 +5,7 @@ from pvlv_database import Database, StatsUpdater
 from pvlv_img_builder.level_up_card import DrawLevelUpCard
 from pvlv.handlers.level_up.level_up_reply import user_field, text_description
 from pvlv.handlers.antispam.antispam_reply import spam_detected_reply
+from pvlv_interactions import Interactions
 from pvlv_commando import (
     CommandNotFound,
     CommandExecutionFail,
@@ -33,6 +34,8 @@ class BaseHandler(object):
 
         self.db = Database(self.bot.guild_id, self.bot.user_id)  # load database
 
+        self.language = self.db.guild.languages[0]
+
         # Update the stats (this are standard for all type of messages)
         # The others stats must be set in the specific handler
         self.stats_updater = StatsUpdater(self.db)
@@ -49,9 +52,16 @@ class BaseHandler(object):
         """
         return self.db.guild.bot_disabled
 
+    def check_interaction(self, text):
+        # reply with the interaction if found
+        i = Interactions(text, self.language)
+        out = i.response()
+        if out:
+            self.bot.reply_text(out)
+
     def check_spam(self):
         if self.stats_updater.is_spam:
-            self.bot.reply_text(spam_detected_reply(self.db.guild.languages[0]))
+            self.bot.reply_text(spam_detected_reply(self.language))
 
     def check_level_up(self):
         """
@@ -66,8 +76,8 @@ class BaseHandler(object):
         if self.stats_updater.is_level_up:
             data = {
                 'level': self.db.user.guild.xp.level,
-                'bold_text': user_field(self.db.guild.languages[0], self.bot.username),
-                'text': text_description(self.db.guild.languages[0], self.db.user.guild.xp.level),
+                'bold_text': user_field(self.language, self.bot.username),
+                'text': text_description(self.language, self.db.user.guild.xp.level),
             }
             d = DrawLevelUpCard(data)
             d.draw_level_up()
@@ -101,7 +111,7 @@ class BaseHandler(object):
 
             try:
                 # text without the command invocation word, and the language of the command
-                command = com.find_command(text[1:], self.db.guild.languages[0], self.db.user.guild.permissions)
+                command = com.find_command(text[1:], self.language, self.db.user.guild.permissions)
 
                 user_command_use = self.db.user.guild.commands.command(command)
                 if user_command_use:
